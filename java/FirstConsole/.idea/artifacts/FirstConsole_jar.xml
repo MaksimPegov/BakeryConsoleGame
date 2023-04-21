@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="FirstConsole:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/FirstConsole_jar</output-path>
+    <root id="archive" name="FirstConsole.jar">
+      <element id="module-output" name="FirstConsole" />
+    </root>
+  </artifact>
+</component>

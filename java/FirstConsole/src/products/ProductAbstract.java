@@ -1,11 +1,25 @@
 package products;
 
 public abstract class ProductAbstract {
-    private String name;
-    private int makePrice;
-    private int sellPrice;
+    private final String name;
+    private final int makePrice;
+    private final int sellPrice;
 
-    public abstract String getName();
+    public ProductAbstract(String name, int makePrice, int sellPrice) {
+        this.name = name;
+        this.makePrice = makePrice;
+        this.sellPrice = sellPrice;
+    }
 
-    public abstract int getPrice();
+    public String getName(){
+        return this.name;
+    }
+
+    public int getSellPrice(){
+        return sellPrice;
+    }
+
+    public int getMakePrice(){
+        return makePrice;
+    }
 }

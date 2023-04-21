@@ -1,9 +1,15 @@
 package bakery;
 
+import products.Product;
+
+import java.util.ArrayList;
+
 public interface BakeryInterface {
-    void addProduct(String name, int bakePrice, int sellPrice);
-    void listProducts();
-    void removeProduct(String name);
-    void bakeProduct(String name);
-    void sellProduct(String name);
+    String addProduct(String name, int bakePrice, int sellPrice);
+    ArrayList<Product> listProducts();
+    String removeProduct(String name);
+
+    String bakeProduct(String name, int amount);
+
+    String sellProduct(String name, int amount);
 }

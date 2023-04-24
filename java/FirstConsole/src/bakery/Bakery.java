@@ -3,14 +3,15 @@ package bakery;
 import products.Product;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Bakery implements BakeryInterface {
     private final String name;
-    private int balance;
+    private double balance;
 
     private ArrayList<Product> products;
 
-    public Bakery(String name, int balance) {
+    public Bakery(String name, double balance) {
         this.name = name;
         this.balance = balance;
 
@@ -19,33 +20,21 @@ public class Bakery implements BakeryInterface {
         System.out.println("Bakery " + name + " has been created!");
     }
 
-    public int getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    public String addProduct(String name, int bakePrice, int sellPrice) {
-        products.add(new Product(name, bakePrice, sellPrice));
-        return name + " has been added!";
-    }
-
     @Override
-    public ArrayList<Product> listProducts() {
-        return products;
-    }
-
-    @Override
-    public String removeProduct(String name) {
-        try{
-            products.remove(name);
-            return name + " has been removed!";
-        }catch (Exception e){
-            return "No such product!";
+    public boolean isInStock(String name) {
+        try {
+            return getProduct(name).getAmount() > 0;
+        } catch (Exception e) {
+            return false;
         }
     }
 
     @Override
-    public String bakeProduct(String name, int amount) {
-        try {
+    public Product getProduct(String name) {
             boolean found = false;
             int index = -1;
             for (int i = 0; i < products.size(); i++) {
@@ -55,14 +44,51 @@ public class Bakery implements BakeryInterface {
                     break;
                 }
             }
-            if (products.get(index).getMakePrice() * amount > balance) {
+
+            if (found) {
+                return products.get(index);
+            }else {
+                return null;
+            }
+    }
+
+    public String addProduct(String name, double bakePrice, double sellPrice) {
+        if (hasProduct(name)) {
+            return "Recipe already exists, please choose another name!";
+        }
+        products.add(new Product(name, bakePrice, sellPrice));
+        return "Recipe " + name + " has been added!";
+    }
+
+    public HashMap<String, Integer> getProducts() {
+        HashMap<String, Integer> productsMap = new HashMap<>();
+        for (Product product : products) {
+            if (product.getAmount() == 0){
+                continue;
+            }
+            productsMap.put(product.getName(), product.getAmount());
+        }
+        return productsMap;
+    }
+
+    @Override
+    public ArrayList<Product> getRecipes() {
+        return products;
+    }
+
+
+    @Override
+    public String bakeProduct(String name, int amount) {
+        try {
+            Product productLocal = getProduct(name);
+            if (productLocal.getMakePrice() * amount > balance) {
                 return "Not enough money(";
             }
             for (int i = 0; i < amount; i++) {
-                balance -= products.get(index).getMakePrice();
-                products.get(index).increase();
+                balance -= productLocal.getMakePrice();
+                productLocal.increase();
             }
-            return amount + name + " has been baked!";
+            return amount + " " + name + " has been baked!";
 
         } catch (Exception e) {
             return "No such product!";
@@ -71,31 +97,29 @@ public class Bakery implements BakeryInterface {
 
     @Override
     public String sellProduct(String name, int amount) {
-        if (amount < 0) {
+        if (amount <= 0) {
             return "Invalid amount!";
         }
 
         try {
-            boolean found = false;
-            int index = -1;
-            for (int i = 0; i < products.size(); i++) {
-                if (products.get(i).getName().equals(name)) {
-                    found = true;
-                    index = i;
-                    break;
-                }
-            }
-            if (products.get(index).getAmount() < amount) {
+            Product productLocal = getProduct(name);
+
+            if (productLocal.getAmount() < amount) {
                 return "Not enough products!";
             }
             for (int i = 0; i < amount; i++) {
-                balance += products.get(index).getSellPrice();
-                products.get(index).decrease();
+                balance += productLocal.getSellPrice();
+                productLocal.decrease();
             }
-            return amount + name + " has been sold!";
+            return amount + " " + name + " has been sold!";
         } catch (Exception e) {
             return "No such product!";
         }
+    }
+
+    @Override
+    public boolean hasProduct(String name) {
+        return getProduct(name) != null;
     }
 
 }

@@ -3,7 +3,7 @@ package products;
 public class Product extends ProductAbstract{
     private int amount;
 
-    public Product(String name, int makePrice, int sellPrice) {
+    public Product(String name, double makePrice, double sellPrice) {
         super(name, makePrice, sellPrice);
     }
 
